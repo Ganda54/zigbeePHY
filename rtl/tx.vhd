@@ -21,6 +21,7 @@ architecture a_tx of tx is
 			from_mac: in  std_logic;
 			symbol:   out std_logic_vector();
 			reset: 	  in  std_logic;
+			Fb:       in  std_logic;
 			clk:	  in  std_logic
 		);
 	end component bit_to_symbol;
@@ -31,6 +32,7 @@ architecture a_tx of tx is
 			ich0: 	  out std_logic;
 			qch0: 	  out std_logic;
 			reset: 	  in  std_logic;
+			Fs:       in  std_logic;
 			clk:	  in  std_logic
 		);
 	end component symbol_to_chip;
@@ -42,6 +44,8 @@ architecture a_tx of tx is
 			ich1:     out std_logic_vector();
 			qch1:     out std_logic_vector();
 			reset: 	  in  std_logic;
+			Fc:       in  std_logic;
+			Fe:       in  std_logic;
 			clk:	  in  std_logic
 		);
 	end component shaper;
