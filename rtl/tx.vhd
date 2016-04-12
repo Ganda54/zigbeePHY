@@ -8,6 +8,8 @@ entity tx is
 		from_mac: in  std_logic;
 		ich: 	  out std_logic_vector();
 		qch:	  out std_logic_vector();
+		Fb:       in  std_logic;
+		Fe:       in  std_logic;
 		reset: 	  in  std_logic;
 		clk:	  in  std_logic
 	);
@@ -22,6 +24,7 @@ architecture a_tx of tx is
 			symbol:   out std_logic_vector();
 			reset: 	  in  std_logic;
 			Fb:       in  std_logic;
+			Fs:       in  std_logic;
 			clk:	  in  std_logic
 		);
 	end component bit_to_symbol;
@@ -33,6 +36,7 @@ architecture a_tx of tx is
 			qch0: 	  out std_logic;
 			reset: 	  in  std_logic;
 			Fs:       in  std_logic;
+			Fc:       in  std_logic;
 			clk:	  in  std_logic
 		);
 	end component symbol_to_chip;
