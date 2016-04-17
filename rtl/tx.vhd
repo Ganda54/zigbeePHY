@@ -3,6 +3,10 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_signed.all;
 use work.pack.all;
 
+------------------------------------------------------------
+-- zigbee transmitter
+-- Authors: A & S Ouedraogo
+------------------------------------------------------------
 entity tx is
 	port(
 		from_mac: in  std_logic;
