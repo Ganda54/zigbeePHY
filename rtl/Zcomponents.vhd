@@ -2,27 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_signed.all;
 use work.pack.all;
-use work.Zcomponents.all;
 
-------------------------------------------------------------
--- zigbee transmitter
--- Authors: A & S Ouedraogo
-------------------------------------------------------------
-entity tx is
-	port(
-		from_mac: in  std_logic;
-		ich: 	  out std_logic_vector(Nbits_dac-1 downto 0);
-		qch:	  out std_logic_vector(Nbits_dac-1 downto 0);
-		Fb:       in  std_logic;
-		Fe:       in  std_logic;
-		reset: 	  in  std_logic;
-		clk:	  in  std_logic
-	);
-end tx;
-
-
-architecture a_tx of tx is
-
+Package Zcomponents IS
 	component bit_to_symbol is
 		port(
 			from_mac: in  std_logic;
@@ -32,7 +13,7 @@ architecture a_tx of tx is
 			Fs:       in  std_logic;
 			clk:	  in  std_logic
 		);
-	end component bit_to_symbol;
+	end component;
 
 	component symbol_to_chip is
 		port(
@@ -44,7 +25,7 @@ architecture a_tx of tx is
 			Fc:       in  std_logic;
 			clk:	  in  std_logic
 		);
-	end component symbol_to_chip;
+	end component;
 
 	component shaper is
 		port(
@@ -57,10 +38,6 @@ architecture a_tx of tx is
 			Fe:       in  std_logic;
 			clk:	  in  std_logic
 		);
-	end component shaper;
-begin
-
-
-end a_tx;
-
-
+	end component;
+	
+end Zcomponents;
