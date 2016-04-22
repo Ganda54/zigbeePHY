@@ -22,7 +22,6 @@ end tx;
 
 
 architecture a_tx of tx is
-
 	
 begin
 U1 : bit_to_symbol  PORT MAP();
