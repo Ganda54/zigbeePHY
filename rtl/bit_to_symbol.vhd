@@ -25,11 +25,10 @@ begin
 					if reset = '1' then
 						reg <= (others => '0');
 					elsif Fb = '1' then
-						for i in 0 to 2 loop
-							reg(i + 1) <= reg(i);
-						end for;
+						reg(3 downto 1) <= reg(2 downto 0);
 						reg(0) < = from_mac;
-					elsif Fs = '1' then
+					end if;
+					if Fs = '1' then
 						symbol <= reg;
 					end if;
 				end if;
