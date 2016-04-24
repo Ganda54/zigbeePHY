@@ -17,5 +17,5 @@ end bit_to_symbol;
 
 architecture a_bit_to_symbol of bit_to_symbol is
 
-
+begin
 end a_bit_to_symbol;
