@@ -16,6 +16,22 @@ entity bit_to_symbol is
 end bit_to_symbol;
 
 architecture a_bit_to_symbol of bit_to_symbol is
-
+	type shift_array is (0 to 3) of std_logic;
+	signal reg: shift_array;
 begin
+	shift_reg: process(clk, reset)
+			 begin
+				if clk'event and clk = '1' then
+					if reset = '1' then
+						reg <= (others => '0');
+					elsif Fb = '1' then
+						for i in 0 to 2 loop
+							reg(i + 1) <= reg(i);
+						end for;
+						reg(0) < = from_mac;
+					elsif Fs = '1' then
+						symbol <= reg;
+					end if;
+				end if;
+			end process;
 end a_bit_to_symbol;
