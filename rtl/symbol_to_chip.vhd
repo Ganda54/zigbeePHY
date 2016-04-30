@@ -17,8 +17,8 @@ entity symbol_to_chip is
 end symbol_to_chip;
 
 architecture a_symbol_to_chip of symbol_to_chip is
-	type chip_sec is (0 downto 31) of std_logic;
-	type mem      is (0 downto 15) of mem; 
+	type chip_sec is array (31 downto 0) of std_logic;
+	type mem      is array (15 downto 0) of chip_sec;
 	constant code : mem:= ("11011001110000110101001000101110",
 										   "11101101100111000011010100100010",
 										   "00101110110110011100001101010010",
