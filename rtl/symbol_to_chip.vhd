@@ -44,22 +44,22 @@ architecture a_symbol_to_chip of symbol_to_chip is
 			if reset ='1' then reg <= (others => '0');
 			elsif Fs='1' then 
 				case symbol IS 
-					when "0000" => reg<= mem(0);
-					when "1000" => reg<= mem(1);
-					when "0100" => reg<= mem(2);
-					when "1100" => reg<= mem(3);
-					when "0010" => reg<= mem(4);
-					when "1010" => reg<= mem(5);
-					when "0110" => reg<= mem(6);
-					when "1110" => reg<= mem(7);
-					when "0001" => reg<= mem(8);
-					when "1001" => reg<= mem(9);
-					when "0101" => reg<= mem(10);
-					when "1101" => reg<= mem(11);
-					when "0011" => reg<= mem(12);
-					when "1011" => reg<= mem(13);
-					when "0111" => reg<= mem(14);
-					when others => reg<= mem(15)
+					when "0000" => reg<= code(0);
+					when "1000" => reg<= code(1);
+					when "0100" => reg<= code(2);
+					when "1100" => reg<= code(3);
+					when "0010" => reg<= code(4);
+					when "1010" => reg<= code(5);
+					when "0110" => reg<= code(6);
+					when "1110" => reg<= code(7);
+					when "0001" => reg<= code(8);
+					when "1001" => reg<= code(9);
+					when "0101" => reg<= code(10);
+					when "1101" => reg<= code(11);
+					when "0011" => reg<= code(12);
+					when "1011" => reg<= code(13);
+					when "0111" => reg<= code(14);
+					when others => reg<= code(15)
 				end case;
 				reg_i <= (reg(1),reg(3),reg(5),reg(7),reg(9),reg(11),reg(13),reg(15),reg(17),
 							reg(19),reg(21),reg(23),reg(25),reg(27),reg(29),reg(31));
