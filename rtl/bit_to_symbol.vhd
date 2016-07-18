@@ -24,7 +24,7 @@ begin
 				if clk'event and clk = '1' then
 					if reset = '1' then
 						reg <= (others => '0');
-					elsif Fb = '1' then
+					elsif Fb = '1' then -- Is it really the correct shift way ?
 						reg(3 downto 1) <= reg(2 downto 0);
 						reg(0) <= from_mac;
 					end if;

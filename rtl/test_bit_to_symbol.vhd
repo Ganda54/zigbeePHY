@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use IEEE.STD_LOGIC_arith.all;
 use IEEE.STD_LOGIC_SIGNED.all;
+use IEEE.STD_LOGIC_TEXTIO.all;
 use STD.TEXTIO.ALL;
 use work.pack.all;
 
@@ -14,11 +15,12 @@ architecture a_test_bit_to_symbol of test_bit_to_symbol is
   signal clk:       std_logic;
   signal reset:     std_logic;
   signal from_mac : std_logic;
-  signal symbol:    std_logic_vector(Nbits_symb-1 downto 0);
+  signal symbol:    std_logic_vector(Nbits_symb-1 downto 0):="0000";
   signal Fb:        std_logic;
   signal Fs:        std_logic;
-  signal cpt:       integer := 0;
-  constant period:  time := 62.5 ns;
+  signal cpt:       integer := 0; 
+  constant period:  time := 62.5 ns; 
+  
 
   component bit_to_symbol is
 		port(
@@ -65,7 +67,7 @@ begin
 -----------------------------
   div_freq: process
             begin
-              wait until clk'event and clk = '1' and reset = '0';
+              wait until clk'event and clk = '1' and reset = '0'; -- should not be done in VHDL 
                cpt <= cpt+1;
               end process;
 -----------------------------
@@ -88,9 +90,27 @@ Fs <= '1' when ((cpt mod 256) = 0) else '0';
                     readline(data, ln);
                     read(ln,t);
                     from_mac <= std_logic(to_unsigned(t, 1)(0));
-                    wait until Fb'event and Fb = '1';
+                   wait until Fb'event and Fb = '1';
                   end loop;
                   Assert false Report "Test completed";
                   wait;
                 end process;
+
+----------------------------------
+--Write ouput symbols into a file
+-----------------------------------
+
+data_writing : process
+		 file data : text open write_mode is "output_symbols.txt";
+		 variable ln: line;
+	        begin 
+		 wait until Fs'event and Fs= '1';
+		 while true loop 
+		   write(ln,symbol);
+		   writeline(data,ln);
+		   wait until Fs'event and Fs = '1';
+		 end loop;
+		 Assert false Report "Test completed";
+		 wait;
+	       end process;
 end a_test_bit_to_symbol;
