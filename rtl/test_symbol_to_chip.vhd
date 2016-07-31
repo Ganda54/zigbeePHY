@@ -7,33 +7,35 @@ use IEEE.STD_LOGIC_TEXTIO.all;
 use STD.TEXTIO.ALL;
 use work.pack.all;
 
-entity test_bit_to_symbol is
-end test_bit_to_symbol;
+entity test_symbol_to_chip is
+end test_symbol_to_chip;
 
-architecture a_test_bit_to_symbol of test_bit_to_symbol is
+architecture a_test_symbol_to_chip of test_symbol_to_chip is
   signal clk:       std_logic;
   signal reset:     std_logic;
-  signal from_mac : std_logic;
   signal symbol:    std_logic_vector(Nbits_symb-1 downto 0);
-  signal Fb:        std_logic;
+  signal ich0: 	    std_logic;
+  signal qch0: 	    std_logic;
   signal Fs:        std_logic;
+  signal Fc:        std_logic;
   signal cpt:       integer := 0; 
   constant period:  time := 62.5 ns; 
   
 
-  component bit_to_symbol is
+  component symbol_to_chip is
 		port(
-			from_mac: in  std_logic;
-			symbol:   out std_logic_vector(Nbits_symb-1 downto 0);
+			symbol:   in  std_logic_vector(Nbits_symb-1 downto 0);
+			ich0: 	  out std_logic;
+			qch0: 	  out std_logic;
 			reset: 	  in  std_logic;
-			Fb:       in  std_logic;
 			Fs:       in  std_logic;
-			clk:	     in  std_logic
+			Fc:       in  std_logic;
+			clk:	  in  std_logic
 		);
   end component;
 begin
-  bit_to_symbol_i : bit_to_symbol
-  port map(from_mac, symbol, reset, Fb, Fs, clk);
+  symbol_to_chip_i : symbol_to_chip
+  port map(symbol,ich0,qch0, reset, Fs, Fc, clk);
 
 ----------------------------
 --Generates reset signal
@@ -72,44 +74,62 @@ begin
 -----------------------------
 --Generates signal Fb and Fs
 -----------------------------
-Fb <= '1' when ((cpt mod 64) = 0) else '0';
 Fs <= '1' when ((cpt mod 256) = 0) else '0';
+Fc <= '1' when ((cpt mod 256) = 0) else '0';
 
 
------------------------------
---Reads input data from file
------------------------------
+----------------------------------------
+--Reads input data from out_symbols.txt
+----------------------------------------
   data_reading: process
-                  file data : text open read_mode is "input_bits.txt";
+                  file data : text open read_mode is "output_symbols.txt";
                   variable ln: line;
-                  variable t:  integer;
+                  variable v:  std_logic_vector(3 downto 0);
                 begin
-                  wait until Fb'event and Fb = '1';
+                  wait until Fs'event and Fs = '1';
                   while not endfile(data) loop
                     readline(data, ln);
-                    read(ln,t);
-                    from_mac <= std_logic(to_unsigned(t, 1)(0));
-                   wait until Fb'event and Fb = '1';
+                    read(ln,v);
+                    symbol <= v;
+                   wait until Fs'event and Fs = '1';
                   end loop;
                   Assert false Report "Test completed";
                   wait;
                 end process;
 
 ----------------------------------
---Write ouput symbols into a file
+--Write ouput chips  into a file
 -----------------------------------
-
-data_writing : process
-		 file data : text open write_mode is "output_symbols.txt";
-		 variable ln: line;
+data_writing_ich : process
+		 file data_i : text open write_mode is "output_chips_ich.txt";
+		 variable ln_i: line;
 	        begin 
 		 wait until Fs'event and Fs= '1';
 		 while true loop 
-		   write(ln,symbol);
-		   writeline(data,ln);
+		   write(ln_i,ich0);
+		   writeline(data_i,ln_i);
 		   wait until Fs'event and Fs = '1';
 		 end loop;
 		 Assert false Report "Test completed";
 		 wait;
 	       end process;
-end a_test_bit_to_symbol;
+----------------------------------
+--Write ouput chips  into a file
+-----------------------------------
+data_writing_qch : process
+		 file data_q : text open write_mode is "output_chips_qch.txt";
+		 variable ln_q: line;
+	        begin 
+		 wait until Fs'event and Fs= '1';
+		 while true loop 
+		   wait for 1 us; -- channel offset
+		   write(ln_q,qch0);
+		   writeline(data_q,ln_q);
+		   wait until Fs'event and Fs = '1';
+		 end loop;
+		 Assert false Report "Test completed";
+		 wait;
+	       end process;
+
+
+end a_test_symbol_to_chip;

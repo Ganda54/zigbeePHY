@@ -17,7 +17,7 @@ entity symbol_to_chip is
 end symbol_to_chip;
 
 architecture a_symbol_to_chip of symbol_to_chip is
-	type chip_sec is array (31 downto 0) of std_logic;
+	subtype chip_sec is std_logic_vector (31 downto 0); 
 	type mem      is array (15 downto 0) of chip_sec;
 	constant code : mem:= ("11011001110000110101001000101110",
 										   "11101101100111000011010100100010",
@@ -40,6 +40,7 @@ architecture a_symbol_to_chip of symbol_to_chip is
 	signal reg_i,reg_q : std_logic_vector(15 downto 0);
 	begin
 	shifter_reg:process(clk,reset)
+		begin
 		if clk'event and clk ='1' then
 			if reset ='1' then reg <= (others => '0');
 			elsif Fs='1' then 
@@ -59,7 +60,7 @@ architecture a_symbol_to_chip of symbol_to_chip is
 					when "0011" => reg<= code(12);
 					when "1011" => reg<= code(13);
 					when "0111" => reg<= code(14);
-					when others => reg<= code(15)
+					when others => reg<= code(15);
 				end case;
 				reg_i <= (reg(1),reg(3),reg(5),reg(7),reg(9),reg(11),reg(13),reg(15),reg(17),
 							reg(19),reg(21),reg(23),reg(25),reg(27),reg(29),reg(31));
@@ -70,8 +71,8 @@ architecture a_symbol_to_chip of symbol_to_chip is
 			if Fc='1' then
 				ich0 <= reg_i(15);
 				qch0 <= reg_q(15);
-				reg_i(15 downto 0) <= reg_i(14 downto 1);
-				reg_q(15 downto 0) <= reg_q(14 downto 1);
+				reg_i(15 downto 1) <= reg_i(14 downto 0);
+				reg_q(15 downto 1) <= reg_q(14 downto 0);
 			end if;										
 		end if;
 	end process;                                    
