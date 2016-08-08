@@ -25,12 +25,12 @@ architecture a_test_symbol_to_chip of test_symbol_to_chip is
   component symbol_to_chip is
 		port(
 			symbol:   in  std_logic_vector(Nbits_symb-1 downto 0);
-			ich0: 	  out std_logic;
-			qch0: 	  out std_logic;
+			ich0: 	   out std_logic;
+			qch0: 	   out std_logic;
 			reset: 	  in  std_logic;
 			Fs:       in  std_logic;
 			Fc:       in  std_logic;
-			clk:	  in  std_logic
+			clk:	     in  std_logic
 		);
   end component;
 begin
@@ -104,11 +104,11 @@ data_writing_ich : process
 		 file data_i : text open write_mode is "output_chips_ich.txt";
 		 variable ln_i: line;
 	        begin 
-		 wait until Fs'event and Fs= '1';
+		 wait until Fc'event and Fc= '1';
 		 while true loop 
 		   write(ln_i,ich0);
 		   writeline(data_i,ln_i);
-		   wait until Fs'event and Fs = '1';
+		   wait until Fc'event and Fc = '1';
 		 end loop;
 		 Assert false Report "Test completed";
 		 wait;
@@ -120,12 +120,12 @@ data_writing_qch : process
 		 file data_q : text open write_mode is "output_chips_qch.txt";
 		 variable ln_q: line;
 	        begin 
-		 wait until Fs'event and Fs= '1';
+		 wait until Fc'event and Fc= '1';
 		 while true loop 
-		   wait for 1 us; -- channel offset
+		   --wait for 1 us; -- channel offset
 		   write(ln_q,qch0);
 		   writeline(data_q,ln_q);
-		   wait until Fs'event and Fs = '1';
+		   wait until Fc'event and Fc = '1';
 		 end loop;
 		 Assert false Report "Test completed";
 		 wait;
