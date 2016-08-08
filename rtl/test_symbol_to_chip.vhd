@@ -68,14 +68,14 @@ begin
 -----------------------------
   div_freq: process
             begin
-              wait until clk'event and clk = '1' and reset = '0'; -- should not be done in VHDL 
+              wait until clk'event and clk = '1' and reset = '0';
                cpt <= cpt+1;
               end process;
 -----------------------------
 --Generates signal Fb and Fs
 -----------------------------
 Fs <= '1' when ((cpt mod 256) = 0) else '0';
-Fc <= '1' when ((cpt mod 256) = 0) else '0';
+Fc <= '1' when ((cpt mod 16) = 0)  else '0';
 
 
 ----------------------------------------
