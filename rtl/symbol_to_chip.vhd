@@ -40,12 +40,14 @@ architecture a_symbol_to_chip of symbol_to_chip is
 	begin
 	shifter_reg: process(clk,reset)
 	  variable reg: std_logic_vector (31 downto 0);
+	  variable reversed_symbol : std_logic_vector(Nbits_symb-1 downto 0);
 		begin
 		if clk'event and clk ='1' then
 			if reset ='1' then
 			  reg   := (others => '0');
 			elsif Fs='1' then
-			  reg := code(conv_integer(symbol));
+			  reversed_symbol := symbol(3)&symbol(2)&symbol(1)&symbol(0);
+			  reg := code(conv_integer(reversed_symbol));
 			end if;
 			if Fc='1' then
 				ich0 <= reg(31);
