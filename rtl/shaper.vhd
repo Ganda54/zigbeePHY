@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use IEEE.STD_LOGIC_arith.all;
+use IEEE.STD_LOGIC_UNSIGNED.all;
 use work.pack.all;
 
 entity shaper is
@@ -17,44 +19,44 @@ entity shaper is
 end shaper;
 
 architecture a_shaper of shaper is
-	type ech is std_logic_vector (4 downto 0);
-	type reg is array (3 downto 0) of ech;
+	type reg is array (3 downto 0) of std_logic_vector (4 downto 0);
 	signal ich0_1,qch0_1: reg;
+	constant pos_sine : reg := (std_logic_vector(to_signed(0, 5)),
+					std_logic_vector(to_signed(8, 5)),
+					std_logic_vector(to_signed(15, 5)),
+					std_logic_vector(to_signed(8, 5))
+
+	);
+	
+	constant neg_sine : reg := (std_logic_vector(to_signed(0, 5)),
+					std_logic_vector(to_signed(-8, 5)),
+					std_logic_vector(to_signed(-15, 5)),
+					std_logic_vector(to_signed(-8, 5))
+
+	);
 
 	begin
 		ech_symbol:process(clk)
 			begin
-				if clk'event and clk='1'
+				if clk'event and clk='1' then
 					if reset='1' then 
-						ich0_1(3 downto 0) <= (others => 0);
-						qch0_1(3 downto 0) <= (others => 0);
+						ich0_1(3 downto 0) <= (others => std_logic_vector(to_signed(0, 5)));
+						qch0_1(3 downto 0) <= (others => std_logic_vector(to_signed(0, 5)));
 					elsif Fc='1' then
 						case ich0 is 
 							when '1' =>
-								ich0_1(0) <= std_logic_vector(to_signed(0, 5)),
-								ich0_1(1) <= std_logic_vector(to_signed(8, 5)),
-								ich0_1(2) <= std_logic_vector(to_signed(15, 5)),
-								ich0_1(3) <= std_logic_vector(to_signed(8, 5));
+								ich0_1 <= pos_sine;
 							when '0' =>
-								ich0_1(0) <= std_logic_vector(to_signed(0, 5)),
-								ich0_1(1) <= std_logic_vector(to_signed(-8, 5)),
-								ich0_1(2) <= std_logic_vector(to_signed(-15, 5)),
-								ich0_1(3) <= std_logic_vector(to_signed(-8, 5));
-							when others null
+								ich0_1 <= neg_sine;
+							when others => null;
 						end case;
 						
 						case qch0 is 
 							when '1' =>
-								qch0_1(0) <= std_logic_vector(to_signed(0, 5)),
-								qch0_1(1) <= std_logic_vector(to_signed(8, 5)),
-								qch0_1(2) <= std_logic_vector(to_signed(15, 5)),
-								qch0_1(3) <= std_logic_vector(to_signed(8, 5));
+								qch0_1 <= pos_sine;
 							when '0' =>
-								qch0_1(0) <= std_logic_vector(to_signed(0, 5)),
-								qch0_1(1) <= std_logic_vector(to_signed(-8, 5)),
-								qch0_1(2) <= std_logic_vector(to_signed(-15, 5)),
-								qch0_1(3) <= std_logic_vector(to_signed(-8, 5));
-							when others null
+								qch0_1 <= neg_sine;
+							when others => null;
 						end case;
 					end if;
 					if Fe='1' then
@@ -63,6 +65,6 @@ architecture a_shaper of shaper is
 						ich0_1(2 downto 0) <= ich0_1(3 downto 1);
 						qch0_1(2 downto 0) <= qch0_1(3 downto 1);
 					end if;
-						
-								
+				end if;	
+		end process;						
 end a_shaper;
