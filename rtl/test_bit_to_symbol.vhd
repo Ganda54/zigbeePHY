@@ -13,12 +13,12 @@ end test_bit_to_symbol;
 architecture a_test_bit_to_symbol of test_bit_to_symbol is
   signal clk:       std_logic;
   signal reset:     std_logic;
-  signal from_mac : std_logic;
+  signal from_mac : std_logic:='X';
   signal symbol:    std_logic_vector(Nbits_symb-1 downto 0);
   signal Fb:        std_logic;
   signal Fs:        std_logic;
   signal cpt:       integer := 0; 
-  constant period:  time := 62.5 ns; 
+  constant period:  time := 4 ns; 
   
 
   component bit_to_symbol is
@@ -72,8 +72,8 @@ begin
 -----------------------------
 --Generates signal Fb and Fs
 -----------------------------
-Fb <= '1' when ((cpt mod 64) = 0) else '0';
-Fs <= '1' when ((cpt mod 256) = 0) else '0';
+Fb <= '1' when ((cpt mod 1000) = 0 and cpt/=0) else '0';
+Fs <= '1' when ((cpt mod 4016)= 0 and cpt/=0) else '0';
 
 
 -----------------------------
@@ -103,7 +103,7 @@ data_writing : process
 		 file data : text open write_mode is "output_symbols.txt";
 		 variable ln: line;
 	        begin 
-		 wait until Fs'event and Fs= '1';
+		 wait until Fs'event and Fs= '1' and cpt>4016;
 		 while true loop 
 		   write(ln,symbol);
 		   writeline(data,ln);
