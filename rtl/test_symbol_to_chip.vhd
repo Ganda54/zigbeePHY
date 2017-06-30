@@ -14,28 +14,30 @@ architecture a_test_symbol_to_chip of test_symbol_to_chip is
   signal clk:       std_logic;
   signal reset:     std_logic;
   signal symbol:    std_logic_vector(Nbits_symb-1 downto 0);
+  signal chip  :    std_logic_vector (31 downto 0);
   signal ich0: 	    std_logic;
   signal qch0: 	    std_logic;
   signal Fs:        std_logic;
   signal Fc:        std_logic;
   signal cpt:       integer := 0; 
-  constant period:  time := 62.5 ns; 
+  constant period:  time := 4 ns; 
   
 
   component symbol_to_chip is
 		port(
-			symbol:   in  std_logic_vector(Nbits_symb-1 downto 0);
+			symbol:    in  std_logic_vector(Nbits_symb-1 downto 0);
+			chip  :    out std_logic_vector (31 downto 0);
 			ich0: 	   out std_logic;
 			qch0: 	   out std_logic;
-			reset: 	  in  std_logic;
-			Fs:       in  std_logic;
-			Fc:       in  std_logic;
-			clk:	     in  std_logic
+			reset: 	   in  std_logic;
+			Fs:        in  std_logic;
+			Fc:        in  std_logic;
+			clk:	   in  std_logic
 		);
   end component;
 begin
   symbol_to_chip_i : symbol_to_chip
-  port map(symbol,ich0,qch0, reset, Fs, Fc, clk);
+  port map(symbol,chip,ich0,qch0, reset, Fs, Fc, clk);
 
 ----------------------------
 --Generates reset signal
@@ -74,14 +76,14 @@ begin
 -----------------------------
 --Generates signal Fb and Fs
 -----------------------------
-Fs <= '1' when ((cpt mod 256) = 0) else '0';
-Fc <= '1' when ((cpt mod 16) = 0)  else '0';
+Fs <= '1' when ((cpt mod 4016) = 0 and cpt/=0) else '0';
+Fc <= '1' when ((cpt mod 251) =  0  and cpt>=4016) else '0';
 
 
 ----------------------------------------
 --Reads input data from out_symbols.txt
 ----------------------------------------
-  data_reading: process
+ data_reading: process
                   file data : text open read_mode is "output_symbols.txt";
                   variable ln: line;
                   variable v:  std_logic_vector(3 downto 0);
@@ -97,6 +99,7 @@ Fc <= '1' when ((cpt mod 16) = 0)  else '0';
                   wait;
                 end process;
 
+-- How about writing ich and qch in the same file ?
 ----------------------------------
 --Write ouput chips  into a file
 -----------------------------------
@@ -122,7 +125,6 @@ data_writing_qch : process
 	        begin 
 		 wait until Fc'event and Fc= '1';
 		 while true loop 
-		   --wait for 1 us; -- channel offset
 		   write(ln_q,qch0);
 		   writeline(data_q,ln_q);
 		   wait until Fc'event and Fc = '1';
