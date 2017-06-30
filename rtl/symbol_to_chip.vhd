@@ -9,6 +9,7 @@ use work.pack.all;
 entity symbol_to_chip is
 		port(
 			symbol:   in  std_logic_vector(Nbits_symb-1 downto 0);
+			chip  :   out std_logic_vector (31 downto 0);
 			ich0: 	  out std_logic;
 			qch0: 	  out std_logic;
 			reset: 	  in  std_logic;
@@ -48,6 +49,7 @@ architecture a_symbol_to_chip of symbol_to_chip is
 			elsif Fs='1' then
 			  reversed_symbol := symbol(3)&symbol(2)&symbol(1)&symbol(0);
 			  reg := code(conv_integer(reversed_symbol));
+			  chip <= reg;
 			end if;
 			if Fc='1' then
 				ich0 <= reg(31);
