@@ -18,7 +18,7 @@ architecture a_test_symbol_to_chip of test_symbol_to_chip is
   signal ich0: 	    std_logic;
   signal qch0: 	    std_logic;
   signal Fs:        std_logic;
-  signal Fc:        std_logic;
+  signal Fc2:        std_logic;
   signal cpt:       integer := 0; 
   constant period:  time := 4 ns; 
   
@@ -31,13 +31,13 @@ architecture a_test_symbol_to_chip of test_symbol_to_chip is
 			qch0: 	   out std_logic;
 			reset: 	   in  std_logic;
 			Fs:        in  std_logic;
-			Fc:        in  std_logic;
+			Fc2:        in  std_logic;
 			clk:	   in  std_logic
 		);
   end component;
 begin
   symbol_to_chip_i : symbol_to_chip
-  port map(symbol,chip,ich0,qch0, reset, Fs, Fc, clk);
+  port map(symbol,chip,ich0,qch0, reset, Fs, Fc2, clk);
 
 ----------------------------
 --Generates reset signal
@@ -77,7 +77,7 @@ begin
 --Generates signal Fb and Fs
 -----------------------------
 Fs <= '1' when ((cpt mod 4016) = 0 and cpt/=0) else '0';
-Fc <= '1' when ((cpt mod 251) =  0  and cpt>=4016) else '0';
+Fc2 <= '1' when ((cpt mod 251) =  0  and cpt>=4016) else '0';
 
 
 ----------------------------------------
@@ -107,11 +107,11 @@ data_writing_ich : process
 		 file data_i : text open write_mode is "output_chips_ich.txt";
 		 variable ln_i: line;
 	        begin 
-		 wait until Fc'event and Fc= '1';
+		 wait until Fc2'event and Fc2= '1';
 		 while true loop 
 		   write(ln_i,ich0);
 		   writeline(data_i,ln_i);
-		   wait until Fc'event and Fc = '1';
+		   wait until Fc2'event and Fc2 = '1';
 		 end loop;
 		 Assert false Report "Test completed";
 		 wait;
@@ -123,11 +123,11 @@ data_writing_qch : process
 		 file data_q : text open write_mode is "output_chips_qch.txt";
 		 variable ln_q: line;
 	        begin 
-		 wait until Fc'event and Fc= '1';
+		 wait until Fc2'event and Fc2= '1';
 		 while true loop 
 		   write(ln_q,qch0);
 		   writeline(data_q,ln_q);
-		   wait until Fc'event and Fc = '1';
+		   wait until Fc2'event and Fc2 = '1';
 		 end loop;
 		 Assert false Report "Test completed";
 		 wait;

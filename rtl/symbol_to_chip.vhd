@@ -14,7 +14,7 @@ entity symbol_to_chip is
 			qch0: 	  out std_logic;
 			reset: 	  in  std_logic;
 			Fs:       in  std_logic;
-			Fc:       in  std_logic;
+			Fc2:       in  std_logic;
 			clk:	  in  std_logic
 		);
 end symbol_to_chip;
@@ -51,7 +51,7 @@ architecture a_symbol_to_chip of symbol_to_chip is
 			  reg := code(conv_integer(reversed_symbol));
 			  chip <= reg;
 			end if;
-			if Fc='1' then
+			if Fc2='1' then
 				ich0 <= reg(31);
 				qch0 <= reg(30);
 				reg  := reg(29 downto 0) & "00";
