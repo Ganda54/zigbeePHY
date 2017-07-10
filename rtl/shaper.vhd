@@ -12,7 +12,7 @@ entity shaper is
 			ich1:     out std_logic_vector(Nbits_dac-1 downto 0);
 			qch1:     out std_logic_vector(Nbits_dac-1 downto 0);
 			reset: 	  in  std_logic;
-			Fc:       in  std_logic;
+			Fc2:       in  std_logic;
 			Fe:       in  std_logic;
 			clk:	  in  std_logic
 		);
@@ -21,6 +21,15 @@ end shaper;
 architecture a_shaper of shaper is
 	type reg is array (3 downto 0) of std_logic_vector (4 downto 0);
 	signal ich0_1,qch0_1: reg;
+
+-- how could we create a 2 array subtype of reg in oder to save memory ? i tried but Vhdl seems to hate mixing various type even if it makes sense
+	signal delay :reg:= (std_logic_vector(to_signed(0, 5)),
+					std_logic_vector(to_signed(0, 5)),
+					std_logic_vector(to_signed(0, 5)),
+					std_logic_vector(to_signed(0, 5))
+				  );
+
+
 	constant pos_sine : reg := (std_logic_vector(to_signed(0, 5)),
 					std_logic_vector(to_signed(8, 5)),
 					std_logic_vector(to_signed(15, 5)),
@@ -42,7 +51,7 @@ architecture a_shaper of shaper is
 					if reset='1' then 
 						ich0_1(3 downto 0) <= (others => std_logic_vector(to_signed(0, 5)));
 						qch0_1(3 downto 0) <= (others => std_logic_vector(to_signed(0, 5)));
-					elsif Fc='1' then
+					elsif Fc2='1' then
 						case ich0 is 
 							when '1' =>
 								ich0_1 <= pos_sine;
@@ -53,17 +62,21 @@ architecture a_shaper of shaper is
 						
 						case qch0 is 
 							when '1' =>
-								qch0_1 <= pos_sine;
+								qch0_1(3 downto 2) <= delay(1 downto 0);
+								qch0_1(1 downto 0) <= pos_sine(3 downto 2);
+								delay(1 downto 0)  <= pos_sine(1 downto 0);
 							when '0' =>
-								qch0_1 <= neg_sine;
+								qch0_1(3 downto 2) <= delay(1 downto 0);
+								qch0_1(1 downto 0) <= neg_sine(3 downto 2);
+								delay(1 downto 0)  <= neg_sine(1 downto 0);
 							when others => null;
 						end case;
 					end if;
 					if Fe='1' then
-						ich1 <= ich0_1(0);
-						qch1 <= qch0_1(0);
-						ich0_1(2 downto 0) <= ich0_1(3 downto 1);
-						qch0_1(2 downto 0) <= qch0_1(3 downto 1);
+						ich1 <= ich0_1(3);
+						qch1 <= qch0_1(3);
+						ich0_1(3 downto 1) <= ich0_1(2 downto 0);
+						qch0_1(3 downto 1) <= qch0_1(2 downto 0);
 					end if;
 				end if;	
 		end process;						
